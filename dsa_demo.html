@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyFlow | Interactive DSA Demo</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --accent: #58a6ff;
+            --success: #238636;
+            --text: #c9d1d9;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            background-color: var(--card);
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        h1 { font-size: 1.5rem; margin-bottom: 10px; }
+        p { color: #8b949e; margin-bottom: 25px; }
+
+        .console-instruction {
+            background: rgba(88, 166, 255, 0.1);
+            color: var(--accent);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin-bottom: 25px;
+            border: 1px dashed var(--accent);
+        }
+
+        .start-btn {
+            background-color: var(--success);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .start-btn:hover {
+            background-color: #2ea043;
+            transform: scale(1.02);
+        }
+
+        .footer-note {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #484f58;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>PBL Status 3 | Step-by-Step Execution</h1>
+    <p>Interactive Data Structures & Algorithms Demo</p>
+
+    <div class="console-instruction">
+        > Press <b>Ctrl + Shift + J</b> (or F12)<br>
+        to open the Console for output
+    </div>
+
+    <button class="start-btn" onclick="startInteractiveConsole()">
+        Start Interactive Console
+    </button>
+
+    <div class="footer-note">
+        All inputs will be processed using Queue, Stack,<br>
+        Linear Search, and Bubble Sort algorithms.
+    </div>
+</div>
+
+<script>
+    /**
+     * DSA Classes embedded directly to prevent "File Not Found" errors
+     */
+    class StudyQueue {
+        constructor() { this.items = []; }
+        enqueue(item) { this.items.push(item); }
+        log() {
+            console.log("%c[QUEUE - FIFO]", "color: #58a6ff; font-weight: bold;");
+            console.table(this.items);
+        }
+        linearSearch(target) {
+            console.log(`%c[ALGO] Linear Search for: "${target}"`, "color: #f0e68c;");
+            for(let i = 0; i < this.items.length; i++) {
+                console.log(`  Step ${i+1}: Checking "${this.items[i].name}"...`);
+                if(this.items[i].name.toLowerCase() === target.toLowerCase()) {
+                    console.log(`%c>> MATCH FOUND AT INDEX ${i}`, "color: #238636; font-weight: bold;");
+                    return i;
+                }
+            }
+            console.error("No match found.");
+        }
+    }
+
+    class HistoryStack {
+        constructor() { this.records = []; }
+        push(item) { this.records.push(item); }
+        bubbleSort() {
+            console.log("%c[ALGO] Bubble Sort (by Duration)", "color: #50fa7b;");
+            let arr = [...this.records];
+            for (let i = 0; i < arr.length; i++) {
+                for (let j = 0; j < arr.length - i - 1; j++) {
+                    if (arr[j].duration < arr[j + 1].duration) {
+                        console.log(`  [Swap] ${arr[j+1].name} (${arr[j+1].duration}s) > ${arr[j].name} (${arr[j].duration}s)`);
+                        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                    }
+                }
+            }
+            console.table(arr);
+        }
+    }
+
+    async function startInteractiveConsole() {
+        console.clear();
+        console.log("%c--- INTERACTIVE DSA SESSION START ---", "background: #282a36; color: #bd93f9; font-size: 14px; padding: 5px;");
+
+        // 1. Setup Queue
+        const countStr = prompt("Step 1: How many topics do you want to add to the Queue?");
+        const count = parseInt(countStr) || 0;
+        const queue = new StudyQueue();
+
+        for(let i = 0; i < count; i++) {
+            const name = prompt(`Enter name for Topic ${i+1}:`);
+            queue.enqueue({ id: i + 1, name: name || "Unnamed Task" });
+        }
+        queue.log();
+
+        // 2. Linear Search
+        if(count > 0) {
+            const searchVal = prompt("Step 2: Enter a topic name to Search for:");
+            queue.linearSearch(searchVal);
+        }
+
+        // 3. Setup Stack & Sort
+        console.log("\n%c[SIMULATING HISTORY STACK]", "color: #ff79c6; font-weight: bold;");
+        const stack = new HistoryStack();
+        stack.push({ name: "Logic Lab", duration: 120 });
+        stack.push({ name: "Algorithm Review", duration: 450 });
+        stack.push({ name: "Final Polish", duration: 300 });
+        
+        console.log("Adding mock history sessions to stack...");
+        stack.bubbleSort();
+
+        console.log("%c--- SESSION COMPLETE ---", "color: #bd93f9; font-weight: bold;");
+    }
+</script>
+
+</body>
+</html>
